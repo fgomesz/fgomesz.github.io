@@ -28,7 +28,7 @@
      */
     function sayHello() {
         Office.context.mailbox.item.body.setAsync(
-            "Hello world reaalyy!",
+            "Hello assssssssssalyy!",
             {
                 coercionType: "html", // Write text as HTML
             },
@@ -47,7 +47,7 @@
     function sayHello2() {
         // Get the current context
         var context = Office.context;
-
+        Office.context.mailbox.item.to.load(["displayName"]);
         console.log("context.mailbox.item: ", context.mailbox.item);
         // Check if the context is a reply message
         if (context.mailbox.item.itemType === Office.MailboxEnums.ItemType.Message) {
