@@ -19,7 +19,7 @@
 
     Office.onReady((info) => {
         if (info.host === Office.HostType.Outlook) {
-            document.getElementById("helloButton").onclick = sayHello;
+            document.getElementById("helloButton").onclick = sayHello2;
         }
     });
 
@@ -44,7 +44,7 @@
     }
 
     // This function will run when the add-in is activated
-    function onActivated() {
+    function sayHello2() {
     // Get the current context
     var context = Office.context;
 
