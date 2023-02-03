@@ -43,6 +43,39 @@
         );
     }
 
+    // This function will run when the add-in is activated
+    function onActivated() {
+    // Get the current context
+    var context = Office.context;
+
+    // Check if the context is a reply message
+    if (context.mailbox.item.itemType === Office.MailboxEnums.ItemType.Message) {
+        // Get the recipients of the reply message
+        var recipients = context.mailbox.item.to;
+
+        // Build the greeting
+        var greeting = "Hello";
+        for (var i = 0; i < recipients.length; i++) {
+        greeting += " " + recipients[i].displayName + ",";
+        }
+        greeting += "\n\n";
+
+        // Insert the greeting into the reply message body
+        Office.context.mailbox.item.body.setSelectedDataAsync(
+        greeting,
+        {
+            coercionType: Office.CoercionType.Text,
+            asyncContext: {}
+        },
+        function(asyncResult) {
+            if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+            console.error(asyncResult.error.message);
+            }
+        }
+        );
+    }
+    }
+
 </script>
 
 </html>
