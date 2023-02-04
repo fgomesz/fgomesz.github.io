@@ -68,9 +68,6 @@
         // Get the current context
         var context = Office.context;
         
-        Office.context.mailbox.item.addHandlerAsync(Office.EventType.ItemChanged, printRecipients);
-        Office.context.mailbox.item.addHandlerAsync(Office.EventType.ItemChanged, myHandlerFunction, sayHello);
-
         Office.context.mailbox.item.addHandlerAsync(Office.EventType.ItemChanged, myHandlerFunction, mycallback);
 
         
