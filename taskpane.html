@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <p>This add-in will insert the text 'Hello wossssrld!' or not.</p>
+    <p>This add-in will insert the text 'Hello woHELPsrld!' or not.</p>
     <button id="helloButton">Say hello</button>
 
     <!-- The following image URL tracks diagnostic data for this sample add-in. Please remove the image tag if you reuse this sample in your own code project. -->
@@ -43,11 +43,22 @@
         );
     }
 
+    function myHandlerFunction(eventarg) {
+        if (eventarg.attachmentStatus === Office.MailboxEnums.AttachmentStatus.Added) {
+            const attachment = eventarg.attachmentDetails;
+            console.log("Event Fired and Attachment Added!");
+            getAttachmentContentAsync(attachment.id, options, callback);
+        }
+    }
+
     // This function will run when the add-in is activated
     function sayHello2() {
         // Get the current context
         var context = Office.context;
         
+    
+        Office.context.mailbox.item.addHandlerAsync(Office.EventType.ItemChanged, myHandlerFunction, sayHello);
+
         Office.context.mailbox.item.addHandlerAsync(Office.EventType.ItemChanged, function(item) {
             console.log(item.to);
         }, function(result) {
