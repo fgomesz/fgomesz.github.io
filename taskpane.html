@@ -44,10 +44,22 @@
     }
 
     function myHandlerFunction(eventarg) {
+        console.log(eventarg);
         if (eventarg.attachmentStatus === Office.MailboxEnums.AttachmentStatus.Added) {
             const attachment = eventarg.attachmentDetails;
             console.log("Event Fired and Attachment Added!");
             getAttachmentContentAsync(attachment.id, options, callback);
+        }
+    }
+
+    function mycallback(result) {
+        console.log(result.error);
+    }
+
+    function printRecipients() {
+        var emailToRecipients = Office.context.mailbox.item.to;
+        for (var i = 0; i < emailToRecipients.length; i++) {
+            console.log("Recipient: " + emailToRecipients[i].displayName + " <" + emailToRecipients[i].emailAddress + ">");
         }
     }
 
@@ -56,22 +68,12 @@
         // Get the current context
         var context = Office.context;
         
-    
+        Office.context.mailbox.item.addHandlerAsync(Office.EventType.ItemChanged, printRecipients);
         Office.context.mailbox.item.addHandlerAsync(Office.EventType.ItemChanged, myHandlerFunction, sayHello);
 
-        Office.context.mailbox.item.addHandlerAsync(Office.EventType.ItemChanged, function(item) {
-            console.log(item.to);
-        }, function(result) {
-            console.log(result.error);
-        });
+        Office.context.mailbox.item.addHandlerAsync(Office.EventType.ItemChanged, myHandlerFunction, mycallback);
 
-
-        Office.context.mailbox.item.addHandlerAsync(Office.EventType.ItemChanged, function() {
-            var emailToRecipients = Office.context.mailbox.item.to;
-            for (var i = 0; i < emailToRecipients.length; i++) {
-                console.log("Recipient: " + emailToRecipients[i].displayName + " <" + emailToRecipients[i].emailAddress + ">");
-            }
-        });
+        
 
 
         console.log("context.mailbox.item: ", context.mailbox.item);
