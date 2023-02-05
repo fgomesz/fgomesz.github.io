@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <p>This add-in will insert the text 'Hello Ventura!' or not.</p>
+    <p>This add-in will insert the text 'Hello MEEEE!' or not.</p>
     <button id="helloButton">Say hello</button>
 
     <!-- The following image URL tracks diagnostic data for this sample add-in. Please remove the image tag if you reuse this sample in your own code project. -->
@@ -17,12 +17,14 @@
 
 <script>
 
+    /**
     Office.onReady((info) => {
         if (info.host === Office.HostType.Outlook) {
             document.getElementById("helloButton").onclick = sayHello;
         }
     });
-
+    */
+    
     /**
      * Writes 'Hello world!' to a new message body.
      */
@@ -72,6 +74,7 @@
             );
         }
 
+        Office.onReady(sayHello);
 
             
 
