@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <p>This add-in will insert the text 'Hello MEEEE!' or not.</p>
+    <p>This add-in will insert the text 'Hello asdfg!' or not.</p>
     <button id="helloButton">Say hello</button>
 
     <!-- The following image URL tracks diagnostic data for this sample add-in. Please remove the image tag if you reuse this sample in your own code project. -->
@@ -74,7 +74,22 @@
             );
         }
 
-        Office.onReady(sayHello);
+        Office.initialize = function () {
+            // Register the callback for the itemChanged event
+            Office.context.mailbox.addHandlerAsync(
+                Office.EventType.ItemChanged,
+                function (eventArgs) {
+                    // Check if the new selected item is a message and the to property is not empty
+                    if (
+                        eventArgs.item.itemType === Office.MailboxEnums.ItemType.Message &&
+                        eventArgs.item.to.length > 0
+                    ) {
+                        // Call the sayHello function
+                        sayHello();
+                    }
+                }
+            );
+        };
 
             
 
