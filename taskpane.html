@@ -17,13 +17,7 @@
 
 <script>
 
-    
-    Office.onReady((info) => {
-        if (info.host === Office.HostType.Outlook) {
-            document.getElementById("helloButton").onclick = sayHello;
-        }
-    });
-    
+      
     
     /**
      * Writes 'Hello world!' to a new message body.
@@ -74,6 +68,15 @@
             );
         }
     }
+    
+    Office.onReady(() => {
+        var item = Office.context.mailbox.item;
+        if (item.itemType === Office.MailboxEnums.ItemType.Message) {
+            sayHello();
+        }
+    });
+
+
     /**
     Office.onReady(function() {
 
