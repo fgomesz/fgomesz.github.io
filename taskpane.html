@@ -70,12 +70,15 @@
     }
     
     Office.onReady(() => {
-        var item = Office.context.mailbox.item;
-        if (item.itemType === Office.MailboxEnums.ItemType.Message) {
-            sayHello();
+        function eventHandlerFunction(event) {
+            var item = Office.context.mailbox.item;
+            if (item.itemType === Office.MailboxEnums.ItemType.Message) {
+                sayHello();
+            }
         }
+        // Register the event handler function for the "OnNewMessageCompose" event
+        Office.EventType.NewMessageCompose.addHandler(eventHandlerFunction);
     });
-
 
     /**
     Office.onReady(function() {
