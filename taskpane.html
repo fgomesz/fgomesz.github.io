@@ -69,6 +69,19 @@
         }
     }
     
+    Office.onReady(function() {
+        Office.context.mailbox.item.addHandlerAsync(
+            Office.EventType.ItemChanged,
+            eventHandlerFunction
+        );
+    });
+
+    function eventHandlerFunction(eventArgs) {
+        // Your event handling code here
+        sayHello();
+    }
+
+    /**  addhandler does not exist
     Office.onReady(() => {
         function eventHandlerFunction(event) {
             var item = Office.context.mailbox.item;
@@ -79,7 +92,7 @@
         // Register the event handler function for the "OnNewMessageCompose" event
         Office.EventType.NewMessageCompose.addHandler(eventHandlerFunction);
     });
-
+    */
     /**
     Office.onReady(function() {
 
