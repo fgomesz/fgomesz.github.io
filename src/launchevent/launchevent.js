@@ -43,9 +43,25 @@ function onNewMessageComposeHandler(event) {
 
                     if (recipients.length > 0) {
                         // Build the greeting
-                        var greeting = "Hello";
+                        var greeting = "Hi";
                         for (var i = 0; i < recipients.length; i++) {
-                            greeting += " " + recipients[i].displayName + ",";
+                            var mailName = recipients[i].displayName;
+                            
+                            try{
+                              var mailSplit = mailName.split(",");
+                              var lastName = mailSplit[0];
+                              var firstName = mailSplit[1];
+                              
+                              if(mailName.includes("(SEC)")){
+                                greeting += " " + lastName + "-san,";
+                              }else{
+                                greeting += " " + firstName + ","; 
+                              }
+                            } catch (error) {
+                              console.error("Error splitting string: " + error);
+                              greeting += " " + recipients[i].displayName + ",";
+                            }
+
                         }
                         greeting += "\n\n";
                         console.log("Greeting: ", greeting);
