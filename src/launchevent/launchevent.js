@@ -42,7 +42,7 @@ function sayHello() {
 
         if (recipients.length > 0) {
           // Build the greeting
-          var greeting = "Hi men";
+          var greeting = "Hi";
           for (var i = 0; i < recipients.length; i++) {
             var mailName = recipients[i].displayName;
             console.log("DEBUG: ", mailName);
@@ -66,7 +66,7 @@ function sayHello() {
                 firstName = firstName.replace("(Contractor)", "");
                 greeting += " " + firstName + ",";
               } else {
-                greeting += " " + mailName + ",";
+                greeting += " " + firstName + ",";
               }
             } catch (error) {
               console.error("Error splitting string: " + error);
