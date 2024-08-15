@@ -1,0 +1,122 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Office JavaScript API -->
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+
+<body>
+    <p>This add-in will insert the text 'BURN' or not.</p>
+    <button id="helloButton">WHYUNOWORK</button>
+
+    <!-- The following image URL tracks diagnostic data for this sample add-in. Please remove the image tag if you reuse this sample in your own code project. -->
+    <img src="https://pnptelemetry.azurewebsites.net/pnp-officeaddins/samples/outlook-add-in-hello-world-run" />
+</body>
+
+<script>
+
+      
+    
+    /**
+     * Writes 'Hello world!' to a new message body.
+     */
+
+    // This function will run when the add-in is activated
+    function sayHello() {
+        // Get the current context
+        var context = Office.context;
+        console.log("whatgoing on.mailbox.item: ", context.mailbox.item);
+
+        if (context.mailbox.item.itemType === Office.MailboxEnums.ItemType.Message) {
+            Office.context.mailbox.item.to.getAsync(
+                function (asyncResult) {
+                    if (asyncResult.status === "succeeded") {
+                        var recipients = asyncResult.value;
+                        console.log("Recipients: ", recipients);
+
+                        if (recipients.length > 0) {
+                            // Build the greeting
+                            var greeting = "Hello";
+                            for (var i = 0; i < recipients.length; i++) {
+                                greeting += " " + recipients[i].displayName + ",";
+                            }
+                            greeting += "\n\n";
+                            console.log("Greeting: ", greeting);
+                            
+                            // Insert the greeting into the reply message body
+                            Office.context.mailbox.item.body.setSelectedDataAsync(
+                            greeting,
+                            {
+                                coercionType: Office.CoercionType.Text,
+                                asyncContext: {}
+                            },
+                            function(asyncResult) {
+                                if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                                console.error(asyncResult.error.message);
+                                }
+                            }
+                            );
+                        } else {
+                            console.error("No recipients found");
+                        }
+                    } else {
+                        console.error("Failed to retrieve recipients: " + asyncResult.error.message);
+                    }
+                }
+            );
+        }
+    }
+    
+    Office.onReady(function() {
+        Office.context.mailbox.item.addHandlerAsync(
+            Office.EventType.ItemChanged,
+            eventHandlerFunction
+        );
+    });
+
+    function eventHandlerFunction(eventArgs) {
+        // Your event handling code here
+        sayHello();
+    }
+
+    /**  addhandler does not exist
+    Office.onReady(() => {
+        function eventHandlerFunction(event) {
+            var item = Office.context.mailbox.item;
+            if (item.itemType === Office.MailboxEnums.ItemType.Message) {
+                sayHello();
+            }
+        }
+        // Register the event handler function for the "OnNewMessageCompose" event
+        Office.EventType.NewMessageCompose.addHandler(eventHandlerFunction);
+    });
+    */
+    /**
+    Office.onReady(function() {
+
+        Office.initialize = function () {
+            // Register the callback for the itemChanged event
+            Office.context.mailbox.addHandlerAsync(
+                Office.EventType.ItemChanged,
+                function (eventArgs) {
+                    // Check if the new selected item is a message and the to property is not empty
+                    if (
+                        eventArgs.item.itemType === Office.MailboxEnums.ItemType.Message &&
+                        eventArgs.item.to.length > 0
+                    ) {
+                        // Call the sayHello function
+                        sayHello();
+                    }
+                }
+            );
+        };
+            
+    });
+    */
+            
+
+</script>
+
+</html>
