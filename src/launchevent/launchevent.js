@@ -23,9 +23,9 @@ function sayHello() {
             }
 
             var lastName = mailSplit ? mailSplit[0] : "";
-            var firstName = mailSplit ? mailSplit[1] || "" : "";
+            var firstName = mailSplit && mailSplit.length > 1 ? mailSplit[1] : "";
 
-            if (!mailSplit || mailSplit === 'undefined') {
+            if (!mailSplit) {
               greeting += " " + mailName + ",";
             } else if (mailName.includes("(SEC)")) {
               greeting += " " + lastName + "-san,";
