@@ -1,54 +1,70 @@
-<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
-<!-- This file shows how to design a first-run page that provides a welcome screen to the user about the features of the add-in. -->
-
 <!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Contoso Task Pane Add-in</title>
-
     <!-- Office JavaScript API -->
-    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
-
-    <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
-    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css"/>
-
-    <!-- Template styles -->
-    <link href="taskpane.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 
-<body class="ms-font-m ms-welcome ms-Fabric">
-    <header class="ms-welcome__header ms-bgColor-neutralLighter">
-        <img width="90" height="90" src="../../assets/logo-filled.png" alt="Contoso" title="Contoso" />
-        <h1 class="ms-font-su">Welcome</h1>
-    </header>
-    <section id="sideload-msg" class="ms-welcome__main">
-        <h2 class="ms-font-xl">Please sideload your add-in to see app body.</h2>
-    </section>
-    <main id="app-body" class="ms-welcome__main" style="display: none;">
-        <h2 class="ms-font-xl"> Discover what Office Add-ins can do for you today! </h2>
-        <ul class="ms-List ms-welcome__features">
-            <li class="ms-ListItem">
-                <i class="ms-Icon ms-Icon--Ribbon ms-font-xl"></i>
-                <span class="ms-font-m">Achieve more with Office integration</span>
-            </li>
-            <li class="ms-ListItem">
-                <i class="ms-Icon ms-Icon--Unlock ms-font-xl"></i>
-                <span class="ms-font-m">Unlock features and functionality</span>
-            </li>
-            <li class="ms-ListItem">
-                <i class="ms-Icon ms-Icon--Design ms-font-xl"></i>
-                <span class="ms-font-m">Create and visualize like a pro</span>
-            </li>
-        </ul>
-        <p class="ms-font-l">Modify the source files, then click <b>Run</b>.</p>
-        <div role="button" id="run" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
-            <span class="ms-Button-label">Run</span>
-        </div>
-    </main>
+<body>
+    <p>This add-in will insert the text 'BURN' or not.</p>
+    <button id="helloButton">WHYUNOWORK</button>
+
 </body>
+
+<script>
+    // This function inserts a greeting into the email body
+    function sayHello() {
+        // Check if the current item is a message
+        if (Office.context.mailbox.item.itemType === Office.MailboxEnums.ItemType.Message) {
+            Office.context.mailbox.item.to.getAsync(function (asyncResult) {
+                if (asyncResult.status === Office.AsyncResultStatus.Succeeded) {
+                    var recipients = asyncResult.value;
+                    console.log("Recipients: ", recipients);
+
+                    if (recipients.length > 0) {
+                        var greeting = "Hello";
+                        for (var i = 0; i < recipients.length; i++) {
+                            greeting += " " + recipients[i].displayName + ",";
+                        }
+                        greeting += "\n\n";
+                        console.log("Greeting: ", greeting);
+                        
+                        // Insert the greeting into the reply message body
+                        Office.context.mailbox.item.body.setSelectedDataAsync(
+                            greeting,
+                            { coercionType: Office.CoercionType.Text },
+                            function(asyncResult) {
+                                if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                                    console.error("Error inserting greeting: " + asyncResult.error.message);
+                                }
+                            }
+                        );
+                    } else {
+                        console.error("No recipients found.");
+                    }
+                } else {
+                    console.error("Failed to retrieve recipients: " + asyncResult.error.message);
+                }
+            });
+        } else {
+            console.error("The item is not a message.");
+        }
+    }
+
+    // Ensure Office.js is ready before executing any Office-related code
+    Office.onReady(function(info) {
+        if (info.host === Office.HostType.Outlook) {
+            // Register the button click event handler once Office.js is ready
+            document.getElementById("helloButton").onclick = function() {
+                console.log("Button clicked!");
+                sayHello();
+            };
+        } else {
+            console.error("This add-in is not running in Outlook.");
+        }
+    });
+
+</script>
 
 </html>
