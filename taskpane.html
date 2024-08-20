@@ -1,4 +1,3 @@
-<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
 <!DOCTYPE html>
 <html>
 
@@ -11,29 +10,19 @@
     <p>This add-in will insert the text 'BURN' or not.</p>
     <button id="helloButton">WHYUNOWORK</button>
 
-    <!-- The following image URL tracks diagnostic data for this sample add-in. Please remove the image tag if you reuse this sample in your own code project. -->
-    
 </body>
 
 <script>
-    /**
-     * Writes 'Hello world!' to a new message body.
-     */
-
-    // This function will run when the add-in is activated
+    // This function inserts a greeting into the email body
     function sayHello() {
-        // Get the current context
-        var context = Office.context;
-        console.log("whatgoingon.mailbox.item: ", context.mailbox.item);
-
-        if (context.mailbox.item.itemType === Office.MailboxEnums.ItemType.Message) {
+        // Check if the current item is a message
+        if (Office.context.mailbox.item.itemType === Office.MailboxEnums.ItemType.Message) {
             Office.context.mailbox.item.to.getAsync(function (asyncResult) {
-                if (asyncResult.status === "succeeded") {
+                if (asyncResult.status === Office.AsyncResultStatus.Succeeded) {
                     var recipients = asyncResult.value;
                     console.log("Recipients: ", recipients);
 
                     if (recipients.length > 0) {
-                        // Build the greeting
                         var greeting = "Hello";
                         for (var i = 0; i < recipients.length; i++) {
                             greeting += " " + recipients[i].displayName + ",";
@@ -44,33 +33,36 @@
                         // Insert the greeting into the reply message body
                         Office.context.mailbox.item.body.setSelectedDataAsync(
                             greeting,
-                            {
-                                coercionType: Office.CoercionType.Text,
-                                asyncContext: {}
-                            },
+                            { coercionType: Office.CoercionType.Text },
                             function(asyncResult) {
                                 if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                                    console.error(asyncResult.error.message);
+                                    console.error("Error inserting greeting: " + asyncResult.error.message);
                                 }
                             }
                         );
                     } else {
-                        console.error("No recipients found");
+                        console.error("No recipients found.");
                     }
                 } else {
                     console.error("Failed to retrieve recipients: " + asyncResult.error.message);
                 }
             });
+        } else {
+            console.error("The item is not a message.");
         }
     }
 
-    Office.onReady(function() {
-        // Ensure Office.js is ready and register the event handler
-        document.getElementById("helloButton").onclick = function() {
-            sayHello();
-        };
-
-        // You can add any additional initialization here
+    // Ensure Office.js is ready before executing any Office-related code
+    Office.onReady(function(info) {
+        if (info.host === Office.HostType.Outlook) {
+            // Register the button click event handler once Office.js is ready
+            document.getElementById("helloButton").onclick = function() {
+                console.log("Button clicked!");
+                sayHello();
+            };
+        } else {
+            console.error("This add-in is not running in Outlook.");
+        }
     });
 
 </script>
