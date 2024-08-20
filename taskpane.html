@@ -16,9 +16,6 @@
 </body>
 
 <script>
-
-      
-    
     /**
      * Writes 'Hello world!' to a new message body.
      */
@@ -27,26 +24,25 @@
     function sayHello() {
         // Get the current context
         var context = Office.context;
-        console.log("whatgoing on.mailbox.item: ", context.mailbox.item);
+        console.log("whatgoingon.mailbox.item: ", context.mailbox.item);
 
         if (context.mailbox.item.itemType === Office.MailboxEnums.ItemType.Message) {
-            Office.context.mailbox.item.to.getAsync(
-                function (asyncResult) {
-                    if (asyncResult.status === "succeeded") {
-                        var recipients = asyncResult.value;
-                        console.log("Recipients: ", recipients);
+            Office.context.mailbox.item.to.getAsync(function (asyncResult) {
+                if (asyncResult.status === "succeeded") {
+                    var recipients = asyncResult.value;
+                    console.log("Recipients: ", recipients);
 
-                        if (recipients.length > 0) {
-                            // Build the greeting
-                            var greeting = "Hello";
-                            for (var i = 0; i < recipients.length; i++) {
-                                greeting += " " + recipients[i].displayName + ",";
-                            }
-                            greeting += "\n\n";
-                            console.log("Greeting: ", greeting);
-                            
-                            // Insert the greeting into the reply message body
-                            Office.context.mailbox.item.body.setSelectedDataAsync(
+                    if (recipients.length > 0) {
+                        // Build the greeting
+                        var greeting = "Hello";
+                        for (var i = 0; i < recipients.length; i++) {
+                            greeting += " " + recipients[i].displayName + ",";
+                        }
+                        greeting += "\n\n";
+                        console.log("Greeting: ", greeting);
+                        
+                        // Insert the greeting into the reply message body
+                        Office.context.mailbox.item.body.setSelectedDataAsync(
                             greeting,
                             {
                                 coercionType: Office.CoercionType.Text,
@@ -54,68 +50,28 @@
                             },
                             function(asyncResult) {
                                 if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                                console.error(asyncResult.error.message);
+                                    console.error(asyncResult.error.message);
                                 }
                             }
-                            );
-                        } else {
-                            console.error("No recipients found");
-                        }
+                        );
                     } else {
-                        console.error("Failed to retrieve recipients: " + asyncResult.error.message);
+                        console.error("No recipients found");
                     }
+                } else {
+                    console.error("Failed to retrieve recipients: " + asyncResult.error.message);
                 }
-            );
+            });
         }
     }
-    
+
     Office.onReady(function() {
-        Office.context.mailbox.item.addHandlerAsync(
-            Office.EventType.ItemChanged,
-            eventHandlerFunction
-        );
-    });
-
-    function eventHandlerFunction(eventArgs) {
-        // Your event handling code here
-        sayHello();
-    }
-
-    /**  addhandler does not exist
-    Office.onReady(() => {
-        function eventHandlerFunction(event) {
-            var item = Office.context.mailbox.item;
-            if (item.itemType === Office.MailboxEnums.ItemType.Message) {
-                sayHello();
-            }
-        }
-        // Register the event handler function for the "OnNewMessageCompose" event
-        Office.EventType.NewMessageCompose.addHandler(eventHandlerFunction);
-    });
-    */
-    /**
-    Office.onReady(function() {
-
-        Office.initialize = function () {
-            // Register the callback for the itemChanged event
-            Office.context.mailbox.addHandlerAsync(
-                Office.EventType.ItemChanged,
-                function (eventArgs) {
-                    // Check if the new selected item is a message and the to property is not empty
-                    if (
-                        eventArgs.item.itemType === Office.MailboxEnums.ItemType.Message &&
-                        eventArgs.item.to.length > 0
-                    ) {
-                        // Call the sayHello function
-                        sayHello();
-                    }
-                }
-            );
+        // Ensure Office.js is ready and register the event handler
+        document.getElementById("helloButton").onclick = function() {
+            sayHello();
         };
-            
+
+        // You can add any additional initialization here
     });
-    */
-            
 
 </script>
 
